@@ -40,16 +40,17 @@ mount /system; mount /system_root; mount /system_root/system /system
 
 ui_print "Rim raffing..."
 
-rm -rf /system/product/priv-app/AssistantShell/
-rm -rf /system/product/priv-app/Contacts/
-rm -rf /system/product/priv-app/AndroidAutoStub/
+rm -rf /system/product/priv-app/TipsPrebuilt/
+rm -rf /system/product/priv-app/GoogleContacts/
+rm -rf /system/product/priv-app/Camera2/
 rm -rf /system/product/priv-app/Velvet/
 
+rm -rf /system/product/app/CalculatorGooglePrebuilt/
+rm -rf /system/product/app/CalendarGooglePrebuilt/
 rm -rf /system/product/app/Chrome/
+rm -rf /system/product/app/Photos/
+rm -rf /system/product/app/PrebuiltDeskClockGoogle/
+rm -rf /system/product/app/talkback/
 rm -rf /system/product/app/TrichromeLibrary/
-rm -rf /system/product/app/Calendar/
-rm -rf /system/product/app/Camera2/
-rm -rf /system/product/app/DeskClock/
-rm -rf /system/product/app/Messages/
 
 ui_print "Done!"
