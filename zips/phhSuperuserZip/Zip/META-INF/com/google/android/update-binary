@@ -1,0 +1,80 @@
+#!/sbin/sh
+# Copyright 2020 Khushraj Rathod
+#
+# This file is part of phhSuperuserZip.
+#
+# phhSuperuserZip is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# phhSuperuserZip is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with phhSuperuserZip.  If not, see <https://www.gnu.org/licenses/>.
+#
+# Template: Shell Script EDIFY Replacement: Recovery Flashable Zip by osm0sis @ xda-developers
+# Can be found here - https://forum.xda-developers.com/android/software-hacking/dev-complete-shell-script-flashable-zip-t2934449/amp/
+
+OUTFD=/proc/self/fd/$2;
+ZIPFILE="$3";
+
+# ui_print "<message>" ["<message 2>" ...]
+ui_print() {
+  while [ "$1" ]; do
+    echo -e "ui_print $1
+      ui_print" >> "$OUTFD";
+    shift;
+  done;
+}
+
+# package_extract_dir <dir> <destination_dir>
+package_extract_dir() {
+  local entry outfile;
+  for entry in $(unzip -l "$ZIPFILE" 2>/dev/null | tail -n+4 | grep -v '/$' | grep -o " $1.*$" | cut -c2-); do
+    outfile="$(echo "$entry" | sed "s|${1}|${2}|")";
+    mkdir -p "$(dirname "$outfile")";
+    unzip -o "$ZIPFILE" "$entry" -p > "$outfile";
+  done;
+}
+
+# set_metadata <file> <uid|gid|mode|capabilities|selabel> <value> [<uid|gid|mode|capabilities|selabel_2> <value2> ...]
+set_metadata() {
+  local file i;
+  file="$1";
+  shift;
+  while [ "$2" ]; do
+    case $1 in
+      uid) chown $2 "$file";;
+      gid) chown :$2 "$file";;
+      mode) chmod $2 "$file";;
+      capabilities) twrp setcap "$file" $2;;
+      selabel)
+        for i in /system/bin/toybox /system/toolbox /system/bin/toolbox; do
+          (LD_LIBRARY_PATH=/system/lib $i chcon -h $2 "$file" || LD_LIBRARY_PATH=/system/lib $i chcon $2 "$file") 2>/dev/null;
+        done || chcon -h $2 "$file" || chcon $2 "$file";
+      ;;
+      *) ;;
+    esac;
+    shift 2;
+  done;
+}
+
+ui_print "****************************"
+ui_print "    phh-su flashable zip    "
+ui_print "     by @KhushrajRathod     "
+ui_print "****************************"
+
+ui_print "Mounting system..."
+mount /system; mount /system_root; mount /system_root/system /system
+
+ui_print "Extracting files..."
+package_extract_dir "system" "/system"
+
+ui_print "Setting metadata..."
+set_metadata "/system/bin/phh-su"     "uid" 0 "gid" 2000 "mode" 0755 "selabel" "u:object_r:phhsu_exec:s0"
+set_metadata "/system/etc/init/su.rc" "uid" 0 "gid" 0    "mode" 0644 "selabel" "u:object_r:system_file:s0"
+set_metadata "/system/xbin/su"        "uid" 0 "gid" 0    "mode" 0755 "selabel" "u:object_r:system_file:s0"
