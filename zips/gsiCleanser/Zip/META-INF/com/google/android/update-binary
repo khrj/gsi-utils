@@ -52,5 +52,6 @@ rm -rf /system/product/app/Photos/
 rm -rf /system/product/app/PrebuiltDeskClockGoogle/
 rm -rf /system/product/app/talkback/
 rm -rf /system/product/app/TrichromeLibrary/
+rm -rf /system/product/app/PrebuiltBugle/
 
 ui_print "Done!"
