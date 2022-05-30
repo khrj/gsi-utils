@@ -1,0 +1,55 @@
+#!/sbin/sh
+# Template: Shell Script EDIFY Replacement: Recovery Flashable Zip by osm0sis @ xda-developers
+# Can be found here - https://forum.xda-developers.com/android/software-hacking/dev-complete-shell-script-flashable-zip-t2934449/amp/
+
+# Copyright 2020 Khushraj Rathod
+#
+# This file is part of gsiCleanser.
+#
+# gsiCleaner is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# gsiCleaner is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with gsiCleaner.  If not, see <https://www.gnu.org/licenses/>.
+
+OUTFD=/proc/self/fd/$2;
+
+# ui_print "<message>" ["<message 2>" ...]
+ui_print() {
+  while [ "$1" ]; do
+    echo -e "ui_print $1
+      ui_print" >> "$OUTFD";
+    shift;
+  done;
+}
+
+ui_print "****************************"
+ui_print "        GSI Cleanser        "
+ui_print "     by @KhushrajRathod     "
+ui_print "****************************"
+
+ui_print "Mounting system..."
+mount /system; mount /system_root; mount /system_root/system /system
+
+ui_print "Rim raffing..."
+
+rm -rf /system/product/priv-app/AssistantShell/
+rm -rf /system/product/priv-app/Contacts/
+rm -rf /system/product/priv-app/AndroidAutoStub/
+rm -rf /system/product/priv-app/Velvet/
+
+rm -rf /system/product/app/Chrome/
+rm -rf /system/product/app/TrichromeLibrary/
+rm -rf /system/product/app/Calendar/
+rm -rf /system/product/app/Camera2/
+rm -rf /system/product/app/DeskClock/
+rm -rf /system/product/app/Messages/
+
+ui_print "Done!"

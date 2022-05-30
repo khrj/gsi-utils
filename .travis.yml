@@ -1,0 +1,30 @@
+# Copyright 2020 Khushraj Rathod
+#
+# This file is part of phhSecurizeZip.
+#
+# phhSecurizeZip is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# phhSecurizeZip is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with phhSecurizeZip.  If not, see <https://www.gnu.org/licenses/>.
+
+language: bash
+
+script:
+  - bash ./build-all.sh
+
+after_success:
+  - export UPLOADTOOL_BODY="These are flashable zips, they can be installed via TWRP\nTravis CI build log - https://travis-ci.com/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID/"
+  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+  - bash upload.sh $(find $TRAVIS_BUILD_DIR/out/ -maxdepth 1 -mindepth 1)
+
+branches:
+  except:
+    - /^(?i:continuous.*)$/
