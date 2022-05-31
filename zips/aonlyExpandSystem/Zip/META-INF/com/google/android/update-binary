@@ -18,7 +18,10 @@ ui_print "    A-Only Expand System    "
 ui_print "     by @KhushrajRathod     "
 ui_print "****************************"
 
-ui_print "Resizing system..."
+ui_print "Checking (and repairing) filesystem on system partition..."
+e2fsck -fp /dev/block/by-name/system
+
+ui_print "Resizing filesystem on system partition..."
 resize2fs /dev/block/by-name/system
 
 ui_print "Done!"
